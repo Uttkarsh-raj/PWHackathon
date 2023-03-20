@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const  {v4: uuidv4} = require("uuid");
 const bcrypt = require('bcrypt');
+const jwt=require('jsonwebtoken');
+const secretKey = "secret";
 
 const db = require('../db/conn');
 
@@ -44,8 +46,17 @@ router.post('/login' ,async (req,res)=>{
           response.forEach(doc=>{
             responseARR.push(doc.data());
           });
-        if(response && await bcrypt.compare(password , responseARR[0].password)){
-            res.status(200).json("Login Successful");
+        if(responseARR[0] && await bcrypt.compare(password , responseARR[0].password)){
+            console.log('hello')
+            const token =  jwt.sign({   // syncronously using the jwt key
+                email: responseARR[0].email,
+                id:responseARR[0].uid
+            },
+            secretKey,
+            {
+                expiresIn: '1h'
+            });
+            res.status(200).json({message:"Login Successful",token:token});
         }
         else{
             res.status(401).json("Auth Failed");

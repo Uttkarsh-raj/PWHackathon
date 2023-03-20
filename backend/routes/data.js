@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const db = require("../db/conn");
+const check_auth = require('../middleware/check_auth');
 
 
 router.get("/all" ,async (req,res)=>{
@@ -18,7 +19,7 @@ router.get("/all" ,async (req,res)=>{
     }
 });
 
-router.get("/" , async (req,res)=>{
+router.get("/" ,check_auth, async (req,res)=>{
         const user = req.body.email
           const usersRef =  db.collection("users")
           const response = await usersRef.where('email','==',`${user}`).get();

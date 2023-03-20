@@ -1,6 +1,6 @@
 const express = require('express');
 const api = express();
-
+const cors = require('cors');
 const authRouter=require('../routes/auth');
 const dataRouter=require("../routes/data");
 const modifyRouter=require("../routes/modify");
@@ -11,7 +11,9 @@ const bcrypt = require('bcrypt');
 const db = require('../db/conn');
 
 api.use(express.json());
-
+api.use(cors({
+    origin: '*'
+}));
 api.use(express.urlencoded({extended:true}));
 
 api.use("/api",authRouter);

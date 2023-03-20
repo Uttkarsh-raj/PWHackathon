@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
+const check_auth = require('../middleware/check_auth');
+const db = require("../db/conn");
 
 
-router.post("/courses/:uid" , async (req,res)=>{
+router.post("/courses/:uid" , check_auth, async (req,res)=>{
     try{
         const uid = req.params.uid;
         const resp = await db.collection("users").doc(uid).get();
@@ -24,7 +26,7 @@ router.post("/courses/:uid" , async (req,res)=>{
     }
 })
 
-router.put('/:uid' ,async (req,res)=>{
+router.put('/:uid' , check_auth, async (req,res)=>{
     try{
         const uid = req.params.uid;
         console.log(uid)
@@ -54,7 +56,7 @@ router.put('/:uid' ,async (req,res)=>{
 
 
 
-router.delete("/delete/:uid" , async(req,res)=>{
+router.delete("/delete/:uid" , check_auth, async(req,res)=>{
     try{
         const response = await db.collection("users").doc(req.params.uid).delete();
         res.status(200).json({response:response});
